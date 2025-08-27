@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { animate, inView, stagger } from "motion";
 
-// --- NEW DATA FOR CINEMATIC THEME ---
+// --- DATA ---
 const projects = [
-  { id: 1, title: 'The Obsidian', category: 'New York', imageUrl: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb' },
-  { id: 2, title: 'Monochrome Loft', category: 'London', imageUrl: 'https://images.unsplash.com/photo-1588854337236-6889d6085cd6?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb' },
-  { id: 3, title: 'Villa Noir', category: 'Dubai', imageUrl: 'https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb' },
-  { id: 4, title: 'The Chamberlain', category: 'Los Angeles', imageUrl: 'https://images.unsplash.com/photo-1617104679233-a73c444811a2?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb' },
-  { id: 5, title: 'Kyoto Residence', category: 'Japan', imageUrl: 'https://images.unsplash.com/photo-1615875617238-25a85283c3a4?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb' },
+  { id: 1, title: 'The Obsidian', category: 'New York', imageUrl: '/public/pic1.jpg' },
+  { id: 2, title: 'Monochrome Loft', category: 'London', imageUrl: '/public/pic2.jpg' },
+  { id: 3, title: 'Villa Noir', category: 'Dubai', imageUrl: '/public/pic3.jpg' },
+  { id: 4, title: 'The Chamberlain', category: 'Los Angeles', imageUrl: '/public/pic4.jpg' },
+  { id: 5, title: 'Kyoto Residence', category: 'Japan', imageUrl: '/public/pic5.jpg' },
 ];
 
 // --- COMPONENTS ---
@@ -26,7 +26,9 @@ const Navbar = () => {
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="nav-container">
-        <a href="#home" className="nav-logo">OMKAR</a>
+        <a href="#home" className="nav-logo">
+          <img src="/public/logo.jpeg" alt="Omkar Interiors Logo" className="logo-image" />
+        </a>
         <ul className="nav-menu">
           <li><a href="#about">About</a></li>
           <li><a href="#process">Process</a></li>
