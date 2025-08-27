@@ -3,11 +3,11 @@ import { animate, inView, stagger } from "motion";
 
 // --- DATA ---
 const projects = [
-  { id: 1, title: 'The Obsidian', category: 'New York', imageUrl: '/public/pic1.jpg' },
-  { id: 2, title: 'Monochrome Loft', category: 'London', imageUrl: '/public/pic2.jpg' },
-  { id: 3, title: 'Villa Noir', category: 'Dubai', imageUrl: '/public/pic3.jpg' },
-  { id: 4, title: 'The Chamberlain', category: 'Los Angeles', imageUrl: '/public/pic4.jpg' },
-  { id: 5, title: 'Kyoto Residence', category: 'Japan', imageUrl: '/public/pic5.jpg' },
+  { id: 1, title: 'The Obsidian', category: 'New York', imageUrl: '/pic1.jpg' },
+  { id: 2, title: 'Monochrome Loft', category: 'London', imageUrl: '/pic2.jpg' },
+  { id: 3, title: 'Villa Noir', category: 'Dubai', imageUrl: '/pic3.jpg' },
+  { id: 4, title: 'The Chamberlain', category: 'Los Angeles', imageUrl: '/pic4.jpg' },
+  { id: 5, title: 'Kyoto Residence', category: 'Japan', imageUrl: 'pic5.jpg' },
 ];
 
 // --- COMPONENTS ---
@@ -27,7 +27,7 @@ const Navbar = () => {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="nav-container">
         <a href="#home" className="nav-logo">
-          <img src="/public/logo.jpeg" alt="Omkar Interiors Logo" className="logo-image" />
+          <img src="/logo.jpeg" alt="Omkar Interiors Logo" className="logo-image" />
         </a>
         <ul className="nav-menu">
           <li><a href="#about">About</a></li>
@@ -160,6 +160,8 @@ const Portfolio = () => {
 
 const Contact = () => {
   const sectionRef = useRef(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState(null);
   useEffect(() => {
     inView(sectionRef.current, () => {
       animate(
@@ -175,17 +177,52 @@ const Contact = () => {
       <div className="container contact-container">
         <h2 className="section-title">Contact Us</h2>
         <p>Let's discuss how we can bring your vision to life. Fill out the form below to schedule a private consultation.</p>
-        <form className="contact-form" onSubmit={(e) => e.preventDefault()}>
+        <form className="contact-form" onSubmit={async (e) => {
+          e.preventDefault();
+          const form = e.currentTarget;
+          const name = form.name.value;
+          const email = form.email.value;
+          const message = form.message.value;
+          const phone = form.phone?.value || '';
+          setStatus(null);
+          setSubmitting(true);
+          try {
+            const API_BASE = import.meta.env.VITE_API_BASE || '';
+            const res = await fetch(`${API_BASE}/api/contact`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, email, message, phone })
+            });
+            const data = await res.json();
+            if (res.ok && data.ok) {
+              setStatus({ type: 'success', message: 'Thanks! Your message has been sent.' });
+              form.reset();
+            } else {
+              setStatus({ type: 'error', message: 'Please check your details and try again.' });
+            }
+          } catch (err) {
+            setStatus({ type: 'error', message: 'Failed to send. Please try again later.' });
+          }
+          setSubmitting(false);
+        }}>
           <div className="form-group">
             <input type="text" id="name" name="name" placeholder="Name" required />
           </div>
           <div className="form-group">
             <input type="email" id="email" name="email" placeholder="Email" required />
           </div>
+          <div className="form-group">
+            <input type="tel" id="phone" name="phone" placeholder="Phone (optional)" />
+          </div>
           <div className="form-group full-width">
             <textarea id="message" name="message" rows="3" placeholder="Tell us about your project..." required></textarea>
           </div>
-          <button type="submit" className="submit-button">Submit Inquiry</button>
+          <button type="submit" className="submit-button" disabled={submitting}>
+            {submitting ? 'Sending…' : 'Submit Inquiry'}
+          </button>
+          {status && (
+            <p className={`form-status ${status.type}`}>{status.message}</p>
+          )}
         </form>
       </div>
     </section>
